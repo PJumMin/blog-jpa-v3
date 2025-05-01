@@ -20,7 +20,7 @@ public class ReplyService {
 
     // TODO : README 2단계 RestAPI 주소 변경 하여 json 돌려주기
     @Transactional
-    public void 댓글삭제(Integer id, Integer sessionUserId) {
+    public int 댓글삭제(Integer id, Integer sessionUserId) {
         Reply replyPS = replyRepository.findById(id);
 
         // Exception404
@@ -33,5 +33,6 @@ public class ReplyService {
         int boardId = replyPS.getBoard().getId();
 
         replyRepository.deleteById(id);
+        return boardId;
     }
 }
