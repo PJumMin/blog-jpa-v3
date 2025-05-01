@@ -10,6 +10,23 @@ import java.util.List;
 public class BoardResponse {
 
     @Data
+    public static class UpdateFormDTO {
+        private Integer id; // PK 필수
+        private String title;
+        private String content;
+        private Boolean isPublic;
+//        private Integer userID; // 화면X : FK는 들고가도 의미 없음 (사용 불가)
+        //        private List<Reply> replies = new ArrayList<>(); 글이 방금 생성 되었기 때문에 댓글이 있을 수 없음
+
+        public UpdateFormDTO(Board board) {
+            this.id = board.getId();
+            this.title = board.getTitle();
+            this.content = board.getContent();
+            this.isPublic = board.getIsPublic();
+        }
+    }
+
+    @Data
     public static class DTO {
         private Integer id;
         private String title;
@@ -70,12 +87,9 @@ public class BoardResponse {
             for (int i = start; i < end; i++) {
                 numbers.add(i);
             }
-
             return numbers;
         }
-
     }
-
 
     // 상세보기 화면에 필요한 데이터
     @Data

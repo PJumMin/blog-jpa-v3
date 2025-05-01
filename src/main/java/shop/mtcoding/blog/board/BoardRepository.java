@@ -12,6 +12,12 @@ import java.util.List;
 public class BoardRepository {
     private final EntityManager em;
 
+    public void deleteById(Integer id) {
+        em.createQuery("delete from Board b where b.id = :id")
+                .setParameter("id", id)
+                .executeUpdate();
+    }
+
     public Board findByIdJoinUserAndReplies(Integer id) {
         Query query = em.createQuery("select b from Board b join fetch b.user left join fetch b.replies r left join fetch r.user where b.id = :id order by r.id desc", Board.class);
         query.setParameter("id", id);
@@ -25,7 +31,7 @@ public class BoardRepository {
     }
 
     public Board findById(Integer id) {
-        return em.find(Board.class, id);
+        return em.find(Board.class, id); //PC 안에 있는지 찾기, 있으면 캐싱, 없으면 쿼리 날리기
     }
 
     // 그룹 함수 : Long 리턴

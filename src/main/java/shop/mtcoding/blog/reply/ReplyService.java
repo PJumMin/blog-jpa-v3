@@ -13,12 +13,14 @@ public class ReplyService {
     private final ReplyRepository replyRepository;
 
     @Transactional
-    public void 댓글쓰기(ReplyRequest.SaveDTO reqDTO, User sessionUser) {
-        replyRepository.save(reqDTO.toEntity(sessionUser));
+    public ReplyResponse.DTO 댓글쓰기(ReplyRequest.SaveDTO reqDTO, User sessionUser) {
+        Reply replyPS = replyRepository.save(reqDTO.toEntity(sessionUser));
+        return new ReplyResponse.DTO(replyPS);
     }
 
+    // TODO : README 2단계 RestAPI 주소 변경 하여 json 돌려주기
     @Transactional
-    public Integer 댓글삭제(Integer id, Integer sessionUserId) {
+    public void 댓글삭제(Integer id, Integer sessionUserId) {
         Reply replyPS = replyRepository.findById(id);
 
         // Exception404
@@ -31,7 +33,5 @@ public class ReplyService {
         int boardId = replyPS.getBoard().getId();
 
         replyRepository.deleteById(id);
-
-        return boardId;
     }
 }
