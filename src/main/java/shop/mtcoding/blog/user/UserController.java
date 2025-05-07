@@ -19,7 +19,8 @@ public class UserController {
     private final HttpSession session;
 
 
-    @PutMapping("/user") // userId와 같은 인증이 필요한 정보는 DTO말고 session에서 꺼내야함
+    // api 붙으면 JSON return 서버 / s 붙으면 인증 필요
+    @PutMapping("/s/api/user") // userId와 같은 인증이 필요한 정보는 DTO말고 session에서 꺼내야함
     public String update(@Valid @RequestBody UserRequest.UpdateDTO updateDTO, Errors errors) {
         User sessionUser = (User) session.getAttribute("sessionUser");
         // TODO : JWT 이후에
