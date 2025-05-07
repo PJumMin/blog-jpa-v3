@@ -7,10 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import shop.mtcoding.blog._core.util.Resp;
 
 import java.util.Map;
@@ -21,19 +18,12 @@ public class UserController {
     private final UserService userService;
     private final HttpSession session;
 
-    // ViewResolver -> prefix = /templates/ -> suffix = .mustache
-    @GetMapping("/user/update-form")
-    public String updateForm() {
-        return "user/update-form";
-    }
 
-    // TODO : update 데이터 돌려줘야함
-    @PostMapping("/user/update")
-    public String update(@Valid UserRequest.UpdateDTO updateDTO, Errors errors) {
+    @PutMapping("/user") // userId와 같은 인증이 필요한 정보는 DTO말고 session에서 꺼내야함
+    public String update(@Valid @RequestBody UserRequest.UpdateDTO updateDTO, Errors errors) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        // update user_tb set password = ?, email = ? where id = ?
+        // TODO : JWT 이후에
         User userPS = userService.회원정보수정(updateDTO, sessionUser.getId());
-        // 세션 동기화
         session.setAttribute("sessionUser", userPS);
         return "redirect:/";
     }
@@ -44,26 +34,16 @@ public class UserController {
         return Resp.ok(dto);
     }
 
-    @GetMapping("/join-form")
-    public String joinForm() {
-        return "user/join-form";
-    }
-
     @PostMapping("/join")
-    public String join(@Valid UserRequest.JoinDTO reqDTO, Errors errors) {
-
+    public @ResponseBody Resp<?> join(@Valid @RequestBody UserRequest.JoinDTO reqDTO, Errors errors) {
         // DTO로 변경 완료
         UserResponse.DTO respDTO = userService.회원가입(reqDTO);
-        return "redirect:/login-form";
+        return Resp.ok(respDTO);
     }
 
-    @GetMapping("/login-form")
-    public String loginForm() {
-        return "user/login-form";
-    }
-
-    @PostMapping("/login")
-    public String login(@Valid UserRequest.LoginDTO loginDTO, Errors errors, HttpServletResponse response) {
+    // TODO : JWT 이후에
+    @PostMapping("/login") // login은 민간함 정보가 들어가야하기때문에 Get 말고 Post
+    public String login(@Valid @RequestBody UserRequest.LoginDTO loginDTO, Errors errors, HttpServletResponse response) {
         //System.out.println(loginDTO);
         User sessionUser = userService.로그인(loginDTO);
         session.setAttribute("sessionUser", sessionUser);
@@ -77,10 +57,10 @@ public class UserController {
             cookie.setMaxAge(60 * 60 * 24 * 7);
             response.addCookie(cookie);
         }
-
         return "redirect:/";
     }
 
+    // TODO : JWT 이후에
     @GetMapping("/logout")
     public String logout() {
         session.invalidate();

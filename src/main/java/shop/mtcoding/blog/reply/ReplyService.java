@@ -18,9 +18,10 @@ public class ReplyService {
         return new ReplyResponse.DTO(replyPS);
     }
 
+    // 규칙5 : delete는 응답할 데이터가 없다.
     // TODO : README 2단계 RestAPI 주소 변경 하여 json 돌려주기
     @Transactional
-    public int 댓글삭제(Integer id, Integer sessionUserId) {
+    public void 댓글삭제(Integer id, Integer sessionUserId) {
         Reply replyPS = replyRepository.findById(id);
 
         // Exception404
@@ -30,9 +31,6 @@ public class ReplyService {
             throw new Exception403("권한이 없습니다");
         }
 
-        int boardId = replyPS.getBoard().getId();
-
         replyRepository.deleteById(id);
-        return boardId;
     }
 }
