@@ -1,6 +1,5 @@
 package shop.mtcoding.blog.user;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -37,28 +36,28 @@ public class UserController {
 
     @PostMapping("/join")
     public @ResponseBody Resp<?> join(@Valid @RequestBody UserRequest.JoinDTO reqDTO, Errors errors) {
-        // DTO로 변경 완료
         UserResponse.DTO respDTO = userService.회원가입(reqDTO);
         return Resp.ok(respDTO);
     }
 
     // TODO : JWT 이후에
     @PostMapping("/login") // login은 민간함 정보가 들어가야하기때문에 Get 말고 Post
-    public String login(@Valid @RequestBody UserRequest.LoginDTO loginDTO, Errors errors, HttpServletResponse response) {
-        //System.out.println(loginDTO);
-        User sessionUser = userService.로그인(loginDTO);
-        session.setAttribute("sessionUser", sessionUser);
+    public @ResponseBody Resp<?> login(@Valid @RequestBody UserRequest.LoginDTO loginDTO, Errors errors, HttpServletResponse response) {
+        UserResponse.TokenDTO respDTO = userService.로그인(loginDTO);
 
-        if (loginDTO.getRememberMe() == null) {
-            Cookie cookie = new Cookie("username", null);
-            cookie.setMaxAge(0); // 즉시 만료
-            response.addCookie(cookie);
-        } else {
-            Cookie cookie = new Cookie("username", loginDTO.getUsername());
-            cookie.setMaxAge(60 * 60 * 24 * 7);
-            response.addCookie(cookie);
-        }
-        return "redirect:/";
+        // 브라우저라는 보장을 못하기 때문에 쿠키 사용 불가능
+//        if (loginDTO.getRememberMe() == null) {
+//            Cookie cookie = new Cookie("username", null);
+//            cookie.setMaxAge(0); // 즉시 만료
+        
+//            response.addCookie(cookie);
+//        } else {
+//            Cookie cookie = new Cookie("username", loginDTO.getUsername());
+//            cookie.setMaxAge(60 * 60 * 24 * 7);
+//            response.addCookie(cookie);
+//        }
+
+        return Resp.ok(respDTO);
     }
 
     // TODO : JWT 이후에

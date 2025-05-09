@@ -1,5 +1,6 @@
 package shop.mtcoding.blog.user;
 
+import lombok.Builder;
 import lombok.Data;
 
 public class UserResponse {
@@ -18,6 +19,18 @@ public class UserResponse {
             this.username = user.getUsername();
             this.email = user.getEmail();
             this.createdAt = user.getCreatedAt().toString(); // . toString하면 문자열로 바뀜
+        }
+    }
+
+    @Data
+    public static class TokenDTO {
+        private String ascssToken;
+        private String refreshToken;
+
+        @Builder
+        public TokenDTO(String ascssToken, String refreshToken) {
+            this.ascssToken = ascssToken;
+            this.refreshToken = refreshToken;
         }
     }
 }
