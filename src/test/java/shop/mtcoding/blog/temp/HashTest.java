@@ -9,6 +9,7 @@ public class HashTest {
     public void encode_test() {
         // $2a$10$z0vF.yjNdfk13sbwrQFs7uM1o8WRysh8TjucDNqe1d8tjvacivBfu
         // $2a$10$D9DExWw4OHqzezgmi7EFtONtc8g58C8dwlDQQQT9AlYuwhylu3tyC
+        // $2a$10$nncpGtVOH4/HjHpykhnAAuE/mUC6y7CqjfPvrapWGtDj9QabaAgPi
         String password = "1234";
 
         String encPassword = BCrypt.hashpw(password, BCrypt.gensalt());

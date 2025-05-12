@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import shop.mtcoding.blog._core.util.Resp;
@@ -12,58 +12,39 @@ import shop.mtcoding.blog._core.util.Resp;
 import java.util.Map;
 
 @RequiredArgsConstructor
-@Controller
+@RestController // json만 리턴!!
 public class UserController {
     private final UserService userService;
     private final HttpSession session;
 
-
-    // api 붙으면 JSON return 서버 / s 붙으면 인증 필요
-    @PutMapping("/s/api/user") // userId와 같은 인증이 필요한 정보는 DTO말고 session에서 꺼내야함
+    @PutMapping("/s/api/user")
     public String update(@Valid @RequestBody UserRequest.UpdateDTO updateDTO, Errors errors) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        // TODO : JWT 이후에
+        // TODO: JWT 이후에
         User userPS = userService.회원정보수정(updateDTO, sessionUser.getId());
         session.setAttribute("sessionUser", userPS);
         return "redirect:/";
     }
 
     @GetMapping("/api/check-username-available/{username}")
-    public @ResponseBody Resp<?> checkUsernameAvailable(@PathVariable("username") String username) {
+    public ResponseEntity<?> checkUsernameAvailable(@PathVariable("username") String username) {
         Map<String, Object> dto = userService.유저네임중복체크(username);
         return Resp.ok(dto);
     }
 
     @PostMapping("/join")
-    public @ResponseBody Resp<?> join(@Valid @RequestBody UserRequest.JoinDTO reqDTO, Errors errors) {
+    public ResponseEntity<?> join(@Valid @RequestBody UserRequest.JoinDTO reqDTO, Errors errors) {
         UserResponse.DTO respDTO = userService.회원가입(reqDTO);
         return Resp.ok(respDTO);
     }
 
-    // TODO : JWT 이후에
-    @PostMapping("/login") // login은 민간함 정보가 들어가야하기때문에 Get 말고 Post
-    public @ResponseBody Resp<?> login(@Valid @RequestBody UserRequest.LoginDTO loginDTO, Errors errors, HttpServletResponse response) {
+    // TODO: JWT 이후에
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody UserRequest.LoginDTO loginDTO, Errors errors, HttpServletResponse response) {
         UserResponse.TokenDTO respDTO = userService.로그인(loginDTO);
-
-        // 브라우저라는 보장을 못하기 때문에 쿠키 사용 불가능
-//        if (loginDTO.getRememberMe() == null) {
-//            Cookie cookie = new Cookie("username", null);
-//            cookie.setMaxAge(0); // 즉시 만료
-        
-//            response.addCookie(cookie);
-//        } else {
-//            Cookie cookie = new Cookie("username", loginDTO.getUsername());
-//            cookie.setMaxAge(60 * 60 * 24 * 7);
-//            response.addCookie(cookie);
-//        }
-
         return Resp.ok(respDTO);
     }
 
-    // TODO : JWT 이후에
-    @GetMapping("/logout")
-    public String logout() {
-        session.invalidate();
-        return "redirect:/login-form";
-    }
+    // AccessToken만으로는 Logout 을 할 수 없다.
+
 }
