@@ -2,6 +2,7 @@ package shop.mtcoding.blog.temp;
 
 import org.junit.jupiter.api.Test;
 import shop.mtcoding.blog.Apply;
+import shop.mtcoding.blog.ApplyEnum;
 
 public class ApplyTest {
 
@@ -10,7 +11,7 @@ public class ApplyTest {
 //        System.out.println(ApplyEnum.PASS.value);
 //        System.out.println(ApplyEnum.FAIL.value);
 
-        Apply apply = new Apply(1, "홍길동", 3, "합격");
+        Apply apply = new Apply(1, "홍길동", 3, ApplyEnum.PASS);
         System.out.println(apply.getStatus());
     }
 }

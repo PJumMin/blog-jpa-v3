@@ -43,9 +43,11 @@ public class UserService {
 
         // 토큰 생성
         String ascssToken = JwtUtil.create(userPS);
+        String refreshToken = JwtUtil.createRefresh(userPS);
 
+        // DB에 Device서면값(LoginDTO), IP(request), User-Agent(request), RefresToken(만든거 사용)
 
-        return UserResponse.TokenDTO.builder().ascssToken(ascssToken).build();
+        return UserResponse.TokenDTO.builder().ascssToken(ascssToken).refreshToken(refreshToken).build();
     }
 
     public Map<String, Object> 유저네임중복체크(String username) {
