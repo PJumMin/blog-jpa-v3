@@ -1,6 +1,7 @@
 package shop.mtcoding.blog.integre;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import shop.mtcoding.blog.user.UserRequest;
 import static org.hamcrest.Matchers.matchesPattern;
 
 // 컨트롤러 통합 테스트
+@Transactional
 @AutoConfigureMockMvc // MockMvc 클래스가 IoC에 로드 | RestTemplate -> 자바스크립트의 fetch와 동일, 진짜 환경에 요청 가능
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK) // MOCK -> 가짜 환경을 만들어 필요한 의존관계를 다 메모리에 올려서 테스트
 public class UserControllerTest {
